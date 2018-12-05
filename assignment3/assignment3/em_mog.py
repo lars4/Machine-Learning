@@ -32,7 +32,11 @@ def em_mog(X, k, max_iter=20):
     # Initialize the means of the gaussians. You can use K-means!         #
     #######################################################################
     
-    pass
+    kmeans = KMeans(n_clusters = k, max_iter = max_iter)
+
+    kmeans.fit(X)
+
+    mu = kmeans.cluster_centers_
     
     #######################################################################
     #                         END OF YOUR CODE                            #
@@ -77,7 +81,15 @@ def log_likelihood(X, mu, sigma, phi):
     # This is used to check for convergnence of the algorithm.            #
     #######################################################################
     
-    pass
+    k = mu.shape[0]
+    n = X.shape[0]
+
+    ll = 0.0
+    for i in range(n):
+        likelihood_sum = 0.0
+        for j in range(k):
+            likelihood_sum += multivariate_normal.pdf(X[i], mean=mu[j], cov=sigma[j]) * phi[j]
+        ll += np.log(likelihood_sum)
     
     #######################################################################
     #                         END OF YOUR CODE                            #
@@ -103,7 +115,18 @@ def e_step(X, mu, sigma, phi):
     # of a gaussian with the current parameters.                          # 
     #######################################################################
     
-    pass
+    ind = np.arange(phi.shape[0])
+    w = np.zeros((X.shape[0], phi.shape[0]))
+    denumerator  = 0
+    # for l in range(phi.shape[0]):
+    # denumerator += multivariate_normal(X[l], mu[l], sigma[l])
+
+    # Calculate the columns of the matrix.
+    for i in range(mu.shape[0]):
+            w[:, i] = multivariate_normal.pdf(X, mean=mu[i], cov=sigma[i]) * phi[i]
+    
+    # Division over the precalculated denums, elementwise per row.
+    w /= np.sum(w, axis=1)[:, None]
     
     #######################################################################
     #                         END OF YOUR CODE                            #
@@ -123,7 +146,20 @@ def m_step(w, X, mu, sigma, phi, k):
     # algorithm.
     #######################################################################
     
-    pass
+    phi = np.sum(w, axis=0) / X.shape[0]
+
+    sig_mat = np.zeros(sigma[0].shape)
+
+    # Componentwise division
+    mu = np.dot(w.T, X) / np.sum(w, axis=0)[:, np.newaxis]
+
+
+    for j in range(k):
+        for i in range(X.shape[0]):
+            inner_vec = (X[i] - mu[j]).flatten()
+            sig_mat += np.multiply(w[i, j], np.outer(inner_vec, inner_vec))
+
+        sigma[j] = np.divide(sig_mat, np.sum(w[:,j]))
     
     #######################################################################
     #                         END OF YOUR CODE                            #
