@@ -1,4 +1,5 @@
 import numpy as np
+from sklean.decomposition import PCA
 
 def getEigenImages(images, basis):
     
@@ -16,7 +17,8 @@ def getEigenImages(images, basis):
     #         reconstruction - compressed images                          #
     #######################################################################
 
-
+    pass
+    
     #######################################################################
     #                         END OF YOUR CODE                            #
     #######################################################################
