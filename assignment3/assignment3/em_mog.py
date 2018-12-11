@@ -33,9 +33,7 @@ def em_mog(X, k, max_iter=20):
     #######################################################################
     
     kmeans = KMeans(n_clusters = k, max_iter = max_iter)
-
     kmeans.fit(X)
-
     mu = kmeans.cluster_centers_
     
     #######################################################################
@@ -118,14 +116,10 @@ def e_step(X, mu, sigma, phi):
     ind = np.arange(phi.shape[0])
     w = np.zeros((X.shape[0], phi.shape[0]))
     denumerator  = 0
-    # for l in range(phi.shape[0]):
-    # denumerator += multivariate_normal(X[l], mu[l], sigma[l])
-
-    # Calculate the columns of the matrix.
+    
     for i in range(mu.shape[0]):
             w[:, i] = multivariate_normal.pdf(X, mean=mu[i], cov=sigma[i]) * phi[i]
     
-    # Division over the precalculated denums, elementwise per row.
     w /= np.sum(w, axis=1)[:, None]
     
     #######################################################################
@@ -147,12 +141,8 @@ def m_step(w, X, mu, sigma, phi, k):
     #######################################################################
     
     phi = np.sum(w, axis=0) / X.shape[0]
-
     sig_mat = np.zeros(sigma[0].shape)
-
-    # Componentwise division
     mu = np.dot(w.T, X) / np.sum(w, axis=0)[:, np.newaxis]
-
 
     for j in range(k):
         for i in range(X.shape[0]):
