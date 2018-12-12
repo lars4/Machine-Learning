@@ -4,6 +4,9 @@
 # Do not push Jupyter Notebook Checkpoints
 .ipynb_checkpoints
 
+# .ipnyb tutorial python
+python-tutorial.ipynb
+
 # Do not push additional learning material saved in the same folder
 *.pdf
 
